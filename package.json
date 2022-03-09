@@ -6,7 +6,7 @@
   "homepage": "https://github.com/EvgeniyArabadzhiyskiy/goit-js-hw-08#readme",
   "scripts": {
     "dev": "parcel src/*.html",
-    "build": "parcel build src/*.html --public-url /parcel-project-template/"
+    "build": "parcel build src/*.html --public-url /goit-js-hw-08/"
   },
   "repository": {
     "type": "git",
