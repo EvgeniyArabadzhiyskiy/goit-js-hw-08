@@ -12,22 +12,32 @@ refs.form.addEventListener('submit', onFormSubmit);
 
 populateTextarea();
 
-const formData = {};
+let formData = {};
 
 function onFormInput(evt) {
 
     formData[evt.target.name] = evt.target.value;
-    console.log("formData", formData);
 
     localStorage.setItem("feedback-form-state", JSON.stringify(formData));
-    
+
 }
 
 function onFormSubmit(evt) {
     evt.preventDefault();
+    
+    const getItemsMessage = localStorage.getItem("feedback-form-state");
+    const localStorageItems = JSON.parse(getItemsMessage);
 
+    if (localStorageItems) {
+        formData = localStorageItems
+    }
+    
+    console.log("formData", formData);
+    
     evt.currentTarget.reset();
     localStorage.removeItem("feedback-form-state");
+    
+    
 }
 
 function populateTextarea() {
@@ -35,7 +45,7 @@ function populateTextarea() {
     
     if (saveMessage) {
         const localStorageItems = JSON.parse(saveMessage)
-        console.log('localStorage', localStorageItems);
+        // console.log('localStorage', localStorageItems);
 
         
         if (localStorageItems.message) {
