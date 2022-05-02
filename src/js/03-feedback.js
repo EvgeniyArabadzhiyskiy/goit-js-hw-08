@@ -1,6 +1,25 @@
 import throttle from 'lodash.throttle';
 
 
+const storage = {
+    addFormData(key, value) {
+        const result = JSON.stringify(value)
+        localStorage.setItem(key, result)
+        
+    },
+
+    getFormData(key) {
+        try {
+            const payload = localStorage.getItem(key);
+            return JSON.parse(payload)
+        } catch (error) {
+            console.error(error);
+            
+        }
+    }
+}
+
+
 const refs = {
     form: document.querySelector('.feedback-form'),
     input: document.querySelector('[type="email"]'),
@@ -10,6 +29,7 @@ const refs = {
 refs.form.addEventListener('input', throttle(onFormInput, 500));
 refs.form.addEventListener('submit', onFormSubmit);
 
+const STOREGE_KEY = 'feedback-form-state';
 let formData = {};
 
 populateTextarea();
@@ -19,7 +39,8 @@ populateTextarea();
 function onFormInput(evt) {
     formData[evt.target.name] = evt.target.value;
 
-    localStorage.setItem("feedback-form-state", JSON.stringify(formData));
+    // localStorage.setItem(STOREGE_KEY, JSON.stringify(formData));
+    storage.addFormData(STOREGE_KEY, formData)
 
 }
 
@@ -29,31 +50,22 @@ function onFormSubmit(evt) {
     console.log("formData", formData);
     formData = {};
     
-    localStorage.removeItem("feedback-form-state");
+    localStorage.removeItem(STOREGE_KEY);
     evt.currentTarget.reset();
 
 }
 
 function populateTextarea() {
-    const getItemsMessage = localStorage.getItem("feedback-form-state");
-    const localStorageItems = JSON.parse(getItemsMessage);
-   
-    if (localStorageItems) {
-        formData = localStorageItems;
+    const localStorageItems = storage.getFormData(STOREGE_KEY)
+    formData = {...localStorageItems};
         
+    if (formData?.email) {
+        refs.input.value = formData.email;
     }
-    
-    if (localStorageItems) {
-        
-        if (localStorageItems.email) {
-            refs.input.value = localStorageItems.email;
-        }
 
-        if (localStorageItems.message) {
-            refs.textarea.value = localStorageItems.message;
-        }
-  
+    if (formData?.message) {
+        refs.textarea.value = formData.message;
     }
-    
+  
 }
 
